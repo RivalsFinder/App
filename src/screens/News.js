@@ -30,6 +30,10 @@ export default class NewScreen extends React.Component {
       }
 
     render() {
+        var empty;
+        if (!this.state.listViewData.length) {
+            empty = <Spinner color='#1E90FF'/>;
+        }
         return (
             <Container>
                 <Header>
@@ -44,6 +48,7 @@ export default class NewScreen extends React.Component {
                     <Right></Right>
                 </Header>
                 <Content>
+                {empty}
                     <List dataArray={this.state.listViewData}
             renderRow={(data) =>
                     <ListItem avatar onPress={this._openNews.bind(this, data.Link)}>
