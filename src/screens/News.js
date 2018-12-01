@@ -20,7 +20,7 @@ export default class NewScreen extends React.Component {
         .then(body=>{
             body.items.forEach(function(elem) {
                 var element = JSON.parse(elem);
-                element.Date = new Date(element.Date).toLocaleDateString();
+                element.Date = new Date(Date.parse(element.Date)).toLocaleDateString();
                 arr.push(element);
             })
             self.setState({
