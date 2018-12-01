@@ -19,14 +19,10 @@ export default class CreateScreen extends React.Component {
     });
   }
 
-  onValueChangeTime(value) {
-    this.setState({
-      selectedTime: value
-    });
-  }
+
 
   saveAdv() {
-  if (!this.state.selectedTime || !this.state.selectedGame) {
+  if ( !this.state.selectedGame) {
         alert('Заполните поля');
     } else {
     //create and send to db
@@ -36,7 +32,7 @@ export default class CreateScreen extends React.Component {
             NAME:'Вася Пупкин',
             GAME:this.state.selectedGame,
             COMMENT:this.state.text,
-            TIME: this.state.selectedTime,
+            TIME: new Date().toLocaleTimeString(),
             timestamp: firebase.database.ServerValue.TIMESTAMP
        });
       this.props.navigation.navigate('GameScreen');
@@ -71,7 +67,7 @@ export default class CreateScreen extends React.Component {
               placeholder="Выберите игру"
               placeholderStyle={{ color: "#bfc6ea" }}
               placeholderIconColor="#007aff"
-              style={{ width: undefined }}
+              style={{ marginLeft:40}}
               selectedValue={this.state.selectedGame}
               onValueChange={this.onValueChangeGame.bind(this)}
             >
@@ -81,22 +77,7 @@ export default class CreateScreen extends React.Component {
             <Picker.Item label="Кикер" value="Kicker" />
             <Picker.Item label="Теннис" value="Tennis" />
           </Picker>
-          <Picker
-            mode="dropdown"
-            iosIcon={<Icon name="ios-arrow-down-outline" />}
-            placeholder="Актуальность"
-            placeholderStyle={{ color: "#bfc6ea" }}
-            placeholderIconColor="#007aff"
-            style={{ width: undefined }}
-            selectedValue={this.state.selectedTime}
-            onValueChange={this.onValueChangeTime.bind(this)}
-          >
-            <Picker.Item label="Актуальность" value={0} />
-            <Picker.Item label="Бессрочно" value={4} />
-            <Picker.Item label="1 час" value={1} />
-            <Picker.Item label="2 часа" value={2} />
-            <Picker.Item label="3 часа" value={3} />
-          </Picker>
+
           <Item>
             <Icon active name='create' />
             <Input onChangeText={(text) => this.setState({text: text})} placeholder="Введите комментарий..." />

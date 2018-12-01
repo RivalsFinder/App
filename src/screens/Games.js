@@ -31,6 +31,8 @@ export default class GamesScreen extends React.Component {
         this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
         this.state = {
           type: 0,
+          noteCount:0,
+          isThereGames:false,
           listViewData: [],
         };
      }
@@ -61,7 +63,10 @@ export default class GamesScreen extends React.Component {
         tmp.on('value', function (snapshot){
         var arr = [];
             var obj = snapshot.val();
+            self.state.isThereGames=false;
             if (obj){
+
+            self.state.isThereGames=true;
             Object.keys(obj).forEach(function(key){
                 obj[key].uid = key;
                 arr.push(obj[key]);
@@ -71,11 +76,9 @@ export default class GamesScreen extends React.Component {
             })
 
     }
-componentDidMount(){
-  this.getGames();
-
-
-      }
+    componentDidMount(){
+        this.getGames();
+    }
     deleteRow(secId, rowId, rowMap) {
         rowMap[`${secId}${rowId}`].props.closeRow();
         const newData = [...this.state.listViewData];
@@ -89,12 +92,20 @@ componentDidMount(){
                        'Kicker':require('../assets/Kicker.png'),
                        'Billiards':require('../assets/Billiard.png')};
         const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+        var bad;
+        if (this.state.noteCount>0){
+            bad=<Badge style={{marginLeft:-10}}><Text style={{}}>{this.state.noteCount}</Text></Badge>;
+        }
+        else{
+            bad=undefined;
+        }
         return (
             <Container>
                 <Header>
                     <Left>
                         <Button transparent onPress={() => this.props.navigation.navigate('NoticeScreen')}>
                             <Icon name='notifications'/>
+                            {bad}
                         </Button>
                     </Left>
                     <Body>
@@ -129,7 +140,7 @@ componentDidMount(){
                                 <Text note>{data.COMMENT}</Text>
                               </Body>
                               <Right>
-                                <Text>{data.TIME}</Text>
+                                <Text note>{data.TIME}</Text>
                               </Right>
                         </ListItem>
                         }
@@ -141,7 +152,7 @@ componentDidMount(){
                                   NAME2:'Вася Пупкин',
                                   GAME:data.GAME,
                                   COMMENT:data.COMMENT,
-                                  TIME: new Date().toLocaleString(),
+                                  TIME: new Date().toLocaleTimeString(),
                                   TYPE:0,
                                   timestamp: firebase.database.ServerValue.TIMESTAMP
                               })}
@@ -149,6 +160,7 @@ componentDidMount(){
                             <Icon active name="checkmark" />
                           </Button>}
                     />
+                    <Text note style={{textAlign:'center', fontSize:35}}>{this.state.isThereGames==false?"Пока нет предложений\n¯\\_(ツ)_/¯":""}</Text>
                 </Content>
                 <Button rounded onPress={() => this._addNewHot()} style={{alignSelf: 'flex-end', margin: 12}}>
                     <Icon name='add'/>
