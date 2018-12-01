@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import firebase from 'react-native-firebase';
 import { Container, Header, Content, Icon, Item, Left, Body, Button, Right, Title, Picker, Form, Input } from "native-base";
 
 
@@ -30,6 +31,14 @@ export default class CreateScreen extends React.Component {
     } else {
     //create and send to db
     //if text is empty, notification will be without comment
+      firebase.database().ref('Games').push({
+            ID:1,
+            NAME:'Вася Пупкин',
+            GAME:this.state.selectedGame,
+            COMMENT:this.state.text,
+            TIME: this.state.selectedTime,
+            timestamp: firebase.database.ServerValue.TIMESTAMP
+       });
       this.props.navigation.navigate('GameScreen');
     }
   }
