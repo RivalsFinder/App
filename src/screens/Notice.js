@@ -2,13 +2,6 @@ import React, { Component } from 'react';
 import firebase from 'react-native-firebase';
 import { ListView } from 'react-native';
 import { Container, Header,Title, Content, Button, Icon, List, Left, Right, Thumbnail, ListItem, Text, Body } from 'native-base';
-const datas = [
- {ID1:1,NAME1:'Вася Пупкин',ID2:2,NAME2:'Петя Иванов',GAME:'Tennis',COMMENT:'You wanna play? Lets play!',TIME:'12:68',TYPE:0},
- {ID1:1,NAME1:'Вася Пупкин',ID2:2,NAME2:'Петя Иванов',GAME:'Darts',COMMENT:'You wanna play? Lets play!',TIME:'12:68',TYPE:0},
- {ID1:2,NAME1:'Петя Иванов',ID2:1,NAME2:'Вася Пупкин',GAME:'Billiards',COMMENT:'You wanna play? Lets play!',TIME:'12:68',TYPE:1},
- {ID1:1,NAME1:'Вася Пупкин',ID2:2,NAME2:'Петя Иванов',GAME:'Kicker',COMMENT:'You wanna play? Lets play!',TIME:'12:68',TYPE:2},
- {ID1:1,NAME1:'Вася Пупкин',ID2:2,NAME2:'Петя Иванов',GAME:'Tennis',COMMENT:'You wanna play? Lets play!',TIME:'12:68',TYPE:1},
-];
 
 class classname{
     username;
@@ -22,33 +15,28 @@ export default class NoticeScreen extends React.Component  {
       listViewData: [],
     };
   }
-  deleteRow(secId, rowId, rowMap,key) {
-
-    rowMap[`${secId}${rowId}`].props.closeRow();
-    const newData = [...this.state.listViewData];
-    newData.splice(rowId, 1);
-    this.setState({ listViewData: newData });
-  }
 
   componentDidMount(){
   var self = this;
     firebase.database().ref('Notice').on('value', function (snapshot){
-     var arr = [];
-    var obj = snapshot.val();
-    Object.keys(obj).forEach(function(key){
-    obj[key].uid = key;
-    arr.push(obj[key]);
-    });
-     self.setState({listViewData: arr.slice()});
+        var arr = [];
+        var obj = snapshot.val();
+        if (obj){
+            Object.keys(obj).forEach(function(key){
+                obj[key].uid = key;
+                arr.push(obj[key]);
+            });
+        }
+        self.setState({listViewData: arr.slice()});
     })
 
   }
 
   clickHandler(data,t) {
-  console.log(data);
-   firebase.database().ref('Notice').child(data.uid).remove();
-   if (!data.TYPE) {
-      firebase.database().ref('Notice').push({
+    console.log(data);
+    firebase.database().ref('Notice').child(data.uid).remove();
+    if (!data.TYPE) {
+       firebase.database().ref('Notice').push({
                                                ID1:data.ID2,
                                                NAME1:data.NAME2,
                                                ID2:data.ID1,
@@ -59,9 +47,7 @@ export default class NoticeScreen extends React.Component  {
                                                TYPE:t,
                                                timestamp: firebase.database.ServerValue.TIMESTAMP
                                             })
-   }
-
-
+    }
   }
 
   render() {
