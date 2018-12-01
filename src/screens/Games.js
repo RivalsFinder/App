@@ -84,10 +84,10 @@ componentDidMount(){
       }
 
     render() {
-    const gameImages={'Tennis':'https://img.icons8.com/ios/2x/ping-pong-filled.png',
-                       'Darts':'https://img.icons8.com/ios/2x/goal-filled.png',
-                       'Kicker':'https://img.icons8.com/ios/2x/football2-filled.png',
-                       'Billiards':'https://img.icons8.com/ios/2x/billiards-filled.png'};
+    const gameImages={'Tennis':require('../assets/Ping-pong.png'),
+                       'Darts':require('../assets/Darts.png'),
+                       'Kicker':require('../assets/Kicker.png'),
+                       'Billiards':require('../assets/Billiard.png')};
         const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
         return (
             <Container>
@@ -122,7 +122,7 @@ componentDidMount(){
                         renderRow={data =>
                           <ListItem avatar>
                               <Left>
-                                <Thumbnail square style={{width: 30, height: 30}} source={{ uri: gameImages[data.GAME] }}/>
+                                <Thumbnail square style={{width: 30, height: 30, marginLeft: 4}} source={gameImages[data.GAME]}/>
                               </Left>
                               <Body>
                                 <Text>{data.NAME}</Text>
