@@ -48,9 +48,9 @@ export default class NewScreen extends React.Component {
             renderRow={(data) =>
                     <ListItem avatar onPress={this._openNews.bind(this, data.Link)}>
                         <Body>
-                            <Text style={styles.titleText}>{data.Name}</Text>
-                            <Text style={styles.baseText} numberOfLines={2}>{data.Title}</Text>
-                            <Text note numberOfLines={3}>{data.Text}</Text>
+                            <Text note >{data.Name}</Text>
+                            <Text style={styles.titleText} numberOfLines={2}>{data.Title}</Text>
+                            <Text style={styles.baseText} numberOfLines={3}>{data.Text}</Text>
                         </Body>
                         <Right>
                             <Text note>{data.Date}</Text>
@@ -68,8 +68,7 @@ export default class NewScreen extends React.Component {
 
 const styles = StyleSheet.create({
     baseText: {
-      fontSize: 14,
-      fontWeight: 'bold',
+      fontSize: 16,
     },
     titleText: {
       fontSize: 16,
