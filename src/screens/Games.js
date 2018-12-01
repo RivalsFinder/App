@@ -24,18 +24,14 @@ import {
 } from "native-base";
 
 today = new Date();
-const datas = [
-  {NAME:'Simon Mignolet', GAME:'теннис'},
-  {NAME:'Nathaniel Clyne',GAME:'кикер'},
 
-];
 export default class GamesScreen extends React.Component {
     constructor(props) {
         super(props);
         this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
         this.state = {
-          basic: true,
-          listViewData: datas,
+          type: 0,
+          listViewData: [],
         };
      }
 
@@ -47,24 +43,39 @@ export default class GamesScreen extends React.Component {
         this.setState({
             type: value
         });
-        //tyt'
-//        switch(value)
-//        case 0: //подтягиваем всю бд
-//        case 1: data
+
+    }
+    componentDidUpdate(prevProps,prevState){
+        if (this.state.type!==prevState.type)
+            this.getGames();
+    }
+    getGames(){
+        var self = this;
+        var tmp;
+        if (self.state.type!==0) {
+            tmp = firebase.database().ref('Games').orderByChild('GAME').equalTo(self.state.type);
+        }
+        else{
+            tmp=firebase.database().ref('Games');
+        }
+        tmp.on('value', function (snapshot){
+        var arr = [];
+            var obj = snapshot.val();
+            if (obj){
+            Object.keys(obj).forEach(function(key){
+                obj[key].uid = key;
+                arr.push(obj[key]);
+                });
+            }
+             self.setState({listViewData: arr.slice()});
+            })
+
     }
 componentDidMount(){
-  var self = this;
-    firebase.database().ref('Games').on('value', function (snapshot){
-     var arr = [];
-    var obj = snapshot.val();
-    Object.keys(obj).forEach(function(key){
-    obj[key].uid = key;
-    arr.push(obj[key]);
-    });
-     self.setState({listViewData: arr.slice()});
-    })
+  this.getGames();
 
-  }
+
+      }
     deleteRow(secId, rowId, rowMap) {
         rowMap[`${secId}${rowId}`].props.closeRow();
         const newData = [...this.state.listViewData];
@@ -83,7 +94,7 @@ componentDidMount(){
                 <Header>
                     <Left>
                         <Button transparent onPress={() => this.props.navigation.navigate('NoticeScreen')}>
-                            <Icon name='person'/>
+                            <Icon name='notifications'/>
                         </Button>
                     </Left>
                     <Body>
@@ -96,9 +107,10 @@ componentDidMount(){
                             mode='dropdown'
                             onValueChange={this.onValueChange.bind(this)}>
                             <Item label='Все игры' value={0}/>
-                            <Item label='Теннис' value={1}/>
-                            <Item label='Бильярд' value={2}/>
-                            <Item label='Кикер' value={3}/>
+                            <Item label='Теннис' value='Tennis'/>
+                            <Item label='Бильярд' value='Billiards'/>
+                            <Item label='Кикер' value='Kicker'/>
+                            <Item label='Дартс' value='Darts'/>
                         </Picker>
                     </Right>
                 </Header>
@@ -123,16 +135,17 @@ componentDidMount(){
                         }
                         renderLeftHiddenRow={data =>
                           <Button full onPress={() => firebase.database().ref('Notice').push({
-                                                                        ID1:data.ID,
-                                                                        NAME1:data.NAME,
-                                                                        ID2:1,
-                                                                        NAME2:'Вася Пупкин',
-                                                                        GAME:data.GAME,
-                                                                        COMMENT:data.COMMENT,
-                                                                        TIME: new Date().toLocaleString(),
-                                                                        TYPE:0,
-                                                                        timestamp: firebase.database.ServerValue.TIMESTAMP
-                                                                     })} style={{backgroundColor: '#11dd11'}}>
+                                  ID1:data.ID,
+                                  NAME1:data.NAME,
+                                  ID2:1,
+                                  NAME2:'Вася Пупкин',
+                                  GAME:data.GAME,
+                                  COMMENT:data.COMMENT,
+                                  TIME: new Date().toLocaleString(),
+                                  TYPE:0,
+                                  timestamp: firebase.database.ServerValue.TIMESTAMP
+                              })}
+                              style={{backgroundColor: '#11dd11'}}>
                             <Icon active name="checkmark" />
                           </Button>}
                     />
