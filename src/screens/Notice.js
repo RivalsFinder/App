@@ -12,6 +12,7 @@ export default class NoticeScreen extends React.Component  {
     this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.state = {
       basic: true,
+      isThereNotes:false,
       listViewData: [],
     };
   }
@@ -21,7 +22,10 @@ export default class NoticeScreen extends React.Component  {
     firebase.database().ref('Notice').on('value', function (snapshot){
         var arr = [];
         var obj = snapshot.val();
+        self.state.isThereNotes=false;
         if (obj){
+
+            self.state.isThereNotes=true;
             Object.keys(obj).forEach(function(key){
                 obj[key].uid = key;
                 arr.push(obj[key]);
@@ -43,7 +47,7 @@ export default class NoticeScreen extends React.Component  {
                                                NAME2:data.NAME1,
                                                GAME:data.GAME,
                                                COMMENT:data.COMMENT,
-                                               TIME: new Date().toLocaleString(),
+                                               TIME: new Date().toLocaleTimeString(),
                                                TYPE:t,
                                                timestamp: firebase.database.ServerValue.TIMESTAMP
                                             })
@@ -83,7 +87,7 @@ export default class NoticeScreen extends React.Component  {
                 <Thumbnail square style={{width: 30, height: 30, marginLeft: 4}} source={gameImages[data.GAME]}/>
                 </Left>
                 <Body>
-                  <Text>{data.NAME1}</Text>
+                  <Text>{data.NAME2}</Text>
                   <Text note>{data.COMMENT}</Text>
 
                 </Body>
@@ -104,6 +108,8 @@ export default class NoticeScreen extends React.Component  {
                 <Icon active name={data.TYPE==0?"close":"trash"} />
               </Button>}
           />
+          <Text note style={{textAlign:'center', fontSize:35}}>{this.state.isThereNotes==false?"Пока нет уведомлений\n¯\\_(ツ)_/¯":""}</Text>
+
         </Content>
       </Container>
     );
