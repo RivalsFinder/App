@@ -13,7 +13,10 @@ const RootStack = createStackNavigator({
         })
     },
     NoticeScreen: {
-        screen: Notice
+        screen: Notice,
+        navigationOptions: () => ({
+             header: null
+        })
     },
     FilterScreen: {
         screen: Filter,
