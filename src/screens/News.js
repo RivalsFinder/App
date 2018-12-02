@@ -1,6 +1,6 @@
 import React from "react";
 import {Linking, StyleSheet} from "react-native";
-import {Body, Button, Container, Content, Header, Icon, Left, Right, Title, Text, List, ListItem} from "native-base";
+import {Body, Button, Container, Content, Header, Icon, Left, Right, Title, Text, List, ListItem, Spinner} from "native-base";
 
 export default class NewScreen extends React.Component {
     _openNews(url) {

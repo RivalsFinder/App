@@ -1,11 +1,23 @@
 import React from 'react';
 import {createStackNavigator, createAppContainer} from 'react-navigation';
+import {Platform} from 'react-native';
 import Main from './src/screens/Main';
+import Auth from './src/screens/Auth';
 import Notice from './src/screens/Notice';
-import Filter from "./src/screens/Filter";
 import Creator from './src/screens/Create';
 
+const main = Platform.select({
+    ios: 'GameScreen',
+    android: 'AuthScreen'
+});
+
 const RootStack = createStackNavigator({
+    AuthScreen: {
+        screen: Auth,
+        navigationOptions: () => ({
+            header: null
+        })
+    },
     GameScreen: {
         screen: Main,
         navigationOptions: () => ({
@@ -14,12 +26,6 @@ const RootStack = createStackNavigator({
     },
     NoticeScreen: {
         screen: Notice,
-        navigationOptions: () => ({
-             header: null
-        })
-    },
-    FilterScreen: {
-        screen: Filter,
         navigationOptions: () => ({
             header: null
         })
@@ -30,5 +36,5 @@ const RootStack = createStackNavigator({
             header: null
         })
     }
-});
+}, {initialRouteName: main});
 export default createAppContainer(RootStack);
