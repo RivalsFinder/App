@@ -16,13 +16,15 @@ import {
     Item,
     Thumbnail,
     List,
-    ListItem
+    ListItem, Spinner
 } from "native-base";
 
 export default class GamesScreen extends React.Component {
     constructor(props) {
         super(props);
         this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        this.tmp = null;
+        this.firstLoad = true;
         this.state = {
             noteCount: 0,
             isThereGames: false,
@@ -81,12 +83,14 @@ export default class GamesScreen extends React.Component {
 
     getGames() {
         var self = this, tmp;
+        this.tmp && this.tmp.off();
         if (self.state.type !== 0) {
             tmp = firebase.database().ref('Games').orderByChild('GAME').equalTo(self.state.type);
         }
         else {
             tmp = firebase.database().ref('Games');
         }
+        this.tmp = tmp;
         tmp.on('value', function (snapshot) {
             var arr = [], obj = snapshot.val();
             if (obj) {
@@ -107,12 +111,15 @@ export default class GamesScreen extends React.Component {
     }
 
     componentDidMount() {
+        firebase.notifications().onNotification(notification => {
+            alert('Notification received!', notification);
+        });
         this.getGames();
     }
 
     render() {
         var user = firebase.auth().currentUser, uid;
-        var bad;
+        var bad, empty;
         if (this.state.noteCount > 0) {
             bad = <Badge style={{marginLeft: -10}}><Text style={{}}>{this.state.noteCount}</Text></Badge>;
         }
@@ -130,6 +137,13 @@ export default class GamesScreen extends React.Component {
             'Kicker': require('../assets/Kicker.png'),
             'Billiards': require('../assets/Billiard.png')
         };
+        if (!this.state.listViewData.length) {
+            empty = this.firstLoad ? <Spinner/> : <Text note style={{
+                textAlign: 'center',
+                fontSize: 35
+            }}>{"Пока нет уведомлений\n¯\\_(ツ)_/¯"}</Text>;
+            this.firstLoad = false;
+        }
         return (
             <Container>
                 <Header>
@@ -179,12 +193,10 @@ export default class GamesScreen extends React.Component {
                                   <Icon active name={data.ID === uid ? 'trash' : 'checkmark'}/>
                               </Button>}
                     />
-                    <Text note style={{
-                        textAlign: 'center',
-                        fontSize: 35
-                    }}>{this.state.isThereGames == false ? "Пока нет предложений\n¯\\_(ツ)_/¯" : ""}</Text>
+                    {empty}
                 </Content>
-                <Button rounded onPress={() => this._addNewHot()} style={{alignSelf: 'flex-end', margin: 12}}>
+                <Button rounded onPress={() => this._addNewHot()}
+                        style={{alignSelf: 'flex-end', bottom: 12, right: 12, position: 'absolute'}}>
                     <Icon name='add'/>
                 </Button>
             </Container>

@@ -16,6 +16,7 @@ import {
     TextLeft,
     FooterTab,
     Badge,
+    Spinner,
     ListItem,
     Text,
     Body
@@ -24,6 +25,7 @@ import {
 export default class NoticeScreen extends React.Component {
     constructor(props) {
         super(props);
+        this.firstLoad = true;
         this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         this.state = {
             basic: true,
@@ -80,13 +82,20 @@ export default class NoticeScreen extends React.Component {
     }
 
     render() {
+        var empty;
+        if (!this.state.listViewData.length) {
+            empty = this.firstLoad ? <Spinner/> : <Text note style={{
+                textAlign: 'center',
+                fontSize: 35
+            }}>{"Пока нет уведомлений\n¯\\_(ツ)_/¯"}</Text>;
+            this.firstLoad = false;
+        }
         const gameImages = {
             'Tennis': require('../assets/Ping-pong.png'),
             'Darts': require('../assets/Darts.png'),
             'Kicker': require('../assets/Kicker.png'),
             'Billiards': require('../assets/Billiard.png')
         };
-        const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         return (
             <Container>
                 <Header>
@@ -139,11 +148,7 @@ export default class NoticeScreen extends React.Component {
                                 <Icon active name={data.TYPE == 0 ? "close" : "trash"}/>
                             </Button>}
                     />
-                    <Text note style={{
-                        textAlign: 'center',
-                        fontSize: 35
-                    }}>{this.state.isThereNotes == false ? "Пока нет уведомлений\n¯\\_(ツ)_/¯" : ""}</Text>
-
+                    {empty}
                 </Content>
                 <Footer>
                     <FooterTab>

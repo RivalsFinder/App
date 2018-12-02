@@ -39,7 +39,7 @@ export default class NewScreen extends React.Component {
                 <Header>
                     <Left>
                         <Button transparent onPress={() => this.props.navigation.navigate('NoticeScreen')}>
-                            <Icon name='person'/>
+                            <Icon name='notifications'/>
                         </Button>
                     </Left>
                     <Body>
